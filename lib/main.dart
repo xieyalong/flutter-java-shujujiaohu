@@ -26,34 +26,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const String _pong = 'pong';
-  static const String _emptyMessage = '';
   /*
   创建一个信息通道
   StringCodec是services里面的
+  '1'对应Java的通道
    */
-  static const BasicMessageChannel<String> platform =BasicMessageChannel<String>('increment', StringCodec());
+  static const BasicMessageChannel<String> platform =BasicMessageChannel<String>('1', StringCodec());
 
   int _counter = 0;
 
   @override
   void initState() {
     super.initState();
-    //注册与的Java通道
+    //注册回调函数
     platform.setMessageHandler(_handlePlatformIncrement);
   }
   /*
   监听接收Java传过来的数据
    */
   Future<String> _handlePlatformIncrement(String message) async {
+    print(">]得到Java数据="+message);
     setState(() {
       _counter++;
     });
-    return _emptyMessage;
+    return message;
   }
-  //往Java里面发送数据
-  void _sendFlutterIncrement() {
-    platform.send(_pong);
+  /*
+  点击事件，
+  往Java里面发送数据,
+   */
+  void _sendClick() {
+    platform.send("这是flutter数据");
   }
 
   @override
@@ -71,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: const TextStyle(fontSize: 17.0)
               ),
               RaisedButton(
-                  onPressed: _sendFlutterIncrement,
+                  onPressed: _sendClick,
                   child: Text('点击刷新Java页面')
               ),
               RaisedButton(
